@@ -1,4 +1,6 @@
 "use client";
+import dynamic from "next/dynamic";
+
 import { useEffect, useState } from "react";
 import supabase from "../../lib/supabase";
 import Link from "next/link";
@@ -9,8 +11,6 @@ import trophyIcon from "../trophy.png";
 import clogo from "../clogo.png";   // High Council icon
 import infoLogo from "../infologo.png";       // Information icon
 import faqLogo from "../faqlogo.png";   
-import dynamic from "next/dynamic";
-
 const MinecraftSkinViewer = dynamic(
   () => import("../MinecraftSkinViewer"),
   { ssr: false }
