@@ -6,10 +6,16 @@ import logo from "../logo.png"; // adjust the path if your file is in a differen
 import Image from "next/image";
 import discordIcon from "../discord.png";
 import trophyIcon from "../trophy.png";
-import MinecraftSkinViewer from "../MinecraftSkinViewer";
 import clogo from "../clogo.png";   // High Council icon
 import infoLogo from "../infologo.png";       // Information icon
 import faqLogo from "../faqlogo.png";   
+import dynamic from "next/dynamic";
+
+const MinecraftSkinViewer = dynamic(
+  () => import("../MinecraftSkinViewer"),
+  { ssr: false }
+);
+
 
 type Player = {
   ign: string;
