@@ -3,13 +3,15 @@ import { useEffect, useState } from "react";
 import supabase from "../lib/supabase";
 import MinecraftSkinViewer from "../app/MinecraftSkinViewer";
 import Link from "next/link";
-import logo from "../app/logo.png";
 import Image from "next/image";
-import discordIcon from "../app/discord.png";
-import trophyIcon from "../app/trophy.png";
-import clogo from "../app/clogo.png";
-import infoLogo from "../app/infologo.png";
-import faqLogo from "../app/faqlogo.png";
+
+// Use string paths for public images
+const logo = "/logo.png";
+const discordIcon = "/discord.png";
+const trophyIcon = "/trophy.png";
+const clogo = "/clogo.png";
+const infoLogo = "/infologo.png";
+const faqLogo = "/faqlogo.png";
 
 type Player = {
   ign: string;
@@ -38,9 +40,6 @@ export default function Home() {
   const [searchError, setSearchError] = useState("");
   const [infoOpen, setInfoOpen] = useState(false);
   const [councilOpen, setCouncilOpen] = useState(false);
-  const [showBoxes, setShowBoxes] = useState(false);
-
-  useEffect(() => setShowBoxes(true), []);
 
   const fetchPlayers = async () => {
     const { data, error } = await supabase.from("players").select("*");
@@ -75,10 +74,10 @@ export default function Home() {
   });
 
   const getTierHeaderStyle = (tier: string) => {
-    if (tier === "HT1") return "bg-yellow-500 text-black relative overflow-hidden font-bold text-lg";
-    if (tier === "HT2") return "bg-gray-300 text-black relative overflow-hidden font-bold text-lg";
-    if (tier === "HT3") return "bg-[#CD7F32] text-white relative overflow-hidden font-bold text-lg";
-    return "bg-gray-700 text-white relative overflow-hidden font-bold text-lg";
+    if (tier === "HT1") return "bg-yellow-500 text-black font-bold text-lg relative overflow-hidden py-2 rounded-lg";
+    if (tier === "HT2") return "bg-gray-300 text-black font-bold text-lg relative overflow-hidden py-2 rounded-lg";
+    if (tier === "HT3") return "bg-[#CD7F32] text-white font-bold text-lg relative overflow-hidden py-2 rounded-lg";
+    return "bg-gray-700 text-white font-bold text-lg relative overflow-hidden py-2 rounded-lg";
   };
 
   const shineStyle = "absolute top-0 left-[-75%] w-3/4 h-full bg-white opacity-20 transform -skew-x-12 animate-shine";
@@ -97,7 +96,7 @@ export default function Home() {
 
       {/* HEADER */}
       <div className="w-full bg-[#0d0d0d] px-4 sm:px-6 lg:px-12 py-4 flex flex-col sm:flex-row items-center justify-between border-b border-[#222] gap-4 sm:gap-0 relative">
-        <Image src={logo} alt="Logo" style={{ maxWidth: "300px", height: "auto" }} className="mx-auto sm:mx-0" />
+        <Image src={logo} alt="Logo" width={300} height={50} className="mx-auto sm:mx-0 object-contain" />
         <div className="flex items-center gap-4 sm:absolute left-1/2 -translate-x-1/2 flex-wrap justify-center">
           <div className="relative group flex items-center gap-1 cursor-pointer">
             <Image src={trophyIcon} alt="Trophy" width={24} height={24} />
@@ -136,12 +135,12 @@ export default function Home() {
 
       {/* INFO / COUNCIL BOXES */}
       <div className="w-full px-4 sm:px-6 lg:px-12 mt-6 flex flex-col sm:flex-row justify-between gap-2 flex-wrap">
-
+        {/* Info & FAQ */}
         <div className="flex flex-wrap gap-2">
           <div className="bg-[#111] border border-[#222] rounded-md px-6 sm:px-12 py-2 text-base cursor-pointer hover:bg-[#1a1a1a] relative animate-fadeInUp"
                onClick={() => setInfoOpen(!infoOpen)}>
             <div className="flex items-center gap-2">
-              <Image src={infoLogo} alt="Info Icon" width={25} height={25} className="object-contain" />
+              <Image src={infoLogo} alt="Info Icon" width={25} height={25} />
               <span className="font-semibold text-base">Information</span>
             </div>
             {infoOpen && (
@@ -159,16 +158,17 @@ export default function Home() {
 
           <div className="bg-[#111] border border-[#222] rounded-md px-6 sm:px-12 py-2 text-base cursor-default hover:bg-[#1a1a1a] animate-fadeInUp">
             <div className="flex items-center gap-2">
-              <Image src={faqLogo} alt="FAQ Icon" width={25} height={25} className="object-contain" />
+              <Image src={faqLogo} alt="FAQ Icon" width={25} height={25} />
               <span className="font-semibold text-base">FAQ!?</span>
             </div>
           </div>
         </div>
 
+        {/* Council */}
         <div className="bg-[#111] border border-[#222] rounded-md px-6 sm:px-12 py-2 text-base cursor-pointer hover:bg-[#1a1a1a] animate-fadeInUp"
              onClick={() => setCouncilOpen(!councilOpen)}>
           <div className="flex items-center gap-2">
-            <Image src={clogo} alt="cLogo" width={25} height={25} className="object-contain" />
+            <Image src={clogo} alt="cLogo" width={25} height={25} />
             <span className="font-semibold text-base">High Council</span>
           </div>
           {councilOpen && (
@@ -183,7 +183,6 @@ export default function Home() {
             </div>
           )}
         </div>
-
       </div>
 
       {/* TABS */}
@@ -198,10 +197,10 @@ export default function Home() {
 
       {/* PLAYERS GRID */}
       {loading ? <p className="text-center mt-10">Loading players...</p> : (
-        <div className="p-4 sm:p-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-[1400px] mx-auto">
+        <div className="p-4 sm:p-8 grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-6 max-w-[1400px] mx-auto">
           {tiers.map((tier) => (
             <div key={tier} className="bg-[#111] border border-[#222] rounded-xl p-3 min-h-[480px] flex flex-col">
-              <h2 className={`text-center mb-3 py-2 rounded-lg ${getTierHeaderStyle(tier)}`}>
+              <h2 className={`text-center mb-3 ${getTierHeaderStyle(tier)}`}>
                 {tier.replace("HT", "Tier ")}
                 <span className={shineStyle}></span>
               </h2>
@@ -270,7 +269,6 @@ export default function Home() {
         @keyframes shine { 0% { left: -75%; } 100% { left: 125%; } }
         .animate-shine { animation: shine 2s linear infinite; }
       `}</style>
-
     </main>
   );
 }
