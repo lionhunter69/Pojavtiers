@@ -74,7 +74,7 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const tiers = ["HT1", "HT2", "HT3", "HT4", "HT5"];
+  const tiers = ["Tier 1", "Tier 2", "Tier 3", "Tier 5", "tier 4"];
   const tierMap: { [key: string]: { high: Player[]; low: Player[] } } = {};
   tiers.forEach((t) => (tierMap[t] = { high: [], low: [] }));
 
@@ -95,9 +95,9 @@ export default function Home() {
   });
 
   const getTierHeaderStyle = (tier: string) => {
-    if (tier === "HT1") return "bg-yellow-500 text-black relative overflow-hidden font-bold text-lg";
-    if (tier === "HT2") return "bg-gray-300 text-black relative overflow-hidden font-bold text-lg";
-    if (tier === "HT3") return "bg-[#CD7F32] text-white relative overflow-hidden font-bold text-lg";
+    if (tier === "Tier 1") return "bg-yellow-500 text-black relative overflow-hidden font-bold text-lg";
+    if (tier === "Tier 2") return "bg-gray-300 text-black relative overflow-hidden font-bold text-lg";
+    if (tier === "Tier 3") return "bg-[#CD7F32] text-white relative overflow-hidden font-bold text-lg";
     return "bg-gray-700 text-white relative overflow-hidden font-bold text-lg";
   };
 
@@ -296,41 +296,47 @@ export default function Home() {
 
                   return (
                     <div
-                      key={p.ign}
-                      className="group flex h-[46px] bg-[#0f0f0f] border border-[#222] rounded-md hover:bg-[#151515] transition cursor-pointer"
-                      onClick={() => setSelectedPlayer(p)}
-                    >
-                      <img
-                        src={`https://minotar.net/helm/${skinIGN}/32.png`}
-                        alt={p.ign}
-                        className="w-8 h-8 m-auto rounded-sm"
-                        onError={(e) => (e.currentTarget.src = "https://minotar.net/helm/Steve/32.png")}
-                      />
-                      <div className="flex-1 flex items-center pl-2 text-sm gap-2">
-                        <div className="flex gap-[2px]">
-                          {p.tier.toUpperCase().startsWith("HT") ? (
-                            <>
-                              <span className="text-yellow-400 font-bold">|</span>
-                              <span className="text-yellow-400 font-bold">|</span>
-                            </>
-                          ) : (
-                            <span className="text-yellow-400 font-bold">|</span>
-                          )}
-                        </div>
-                        <span>{p.ign}</span>
-                      </div>
-                      <div className="flex items-center pr-2">
-                        <div
-                          className={`flex items-center justify-center h-5 w-[3px] text-[10px] font-bold rounded-full text-white overflow-hidden transition-all duration-200 group-hover:w-10 group-hover:rounded-md ${
-                            isAS ? "bg-red-500" : isEU ? "bg-green-500" : "bg-gray-500"
-                          }`}
-                        >
-                          <span className="opacity-0 group-hover:opacity-100 transition">
-                            {p.region.toUpperCase()}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+  key={p.ign}
+  className="group flex h-[46px] bg-[#0f0f0f] border border-[#222] rounded-md hover:bg-[#151515] transition cursor-pointer"
+  onClick={() => setSelectedPlayer(p)}
+>
+  {/* Head container with responsive padding */}
+  <div className="flex items-center justify-center pl-2 sm:pl-3 md:pl-4">
+    <img
+      src={`https://minotar.net/helm/${skinIGN}/32.png`}
+      alt={p.ign}
+      className="w-8 h-8 rounded-sm -translate-x-[5px]" 
+      onError={(e) => (e.currentTarget.src = "https://minotar.net/helm/Steve/32.png")}
+    />
+  </div>
+
+  <div className="flex-1 flex items-center pl-2 text-sm gap-2">
+    <div className="flex gap-[2px]">
+      {p.tier.toUpperCase().startsWith("HT") ? (
+        <>
+          <span className="text-yellow-400 font-bold">|</span>
+          <span className="text-yellow-400 font-bold">|</span>
+        </>
+      ) : (
+        <span className="text-yellow-400 font-bold">|</span>
+      )}
+    </div>
+    <span>{p.ign}</span>
+  </div>
+
+  <div className="flex items-center pr-2">
+    <div
+      className={`flex items-center justify-center h-5 w-[3px] text-[10px] font-bold rounded-full text-white overflow-hidden transition-all duration-200 group-hover:w-10 group-hover:rounded-md ${
+        isAS ? "bg-red-500" : isEU ? "bg-green-500" : "bg-gray-500"
+      }`}
+    >
+      <span className="opacity-0 group-hover:opacity-100 transition">
+        {p.region.toUpperCase()}
+      </span>
+    </div>
+  </div>
+</div>
+
                   );
                 })}
               </div>
