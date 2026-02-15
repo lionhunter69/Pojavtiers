@@ -74,25 +74,35 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  const tiers = ["Tier 1", "Tier 2", "Tier 3", "Tier 5", "tier 4"];
-  const tierMap: { [key: string]: { high: Player[]; low: Player[] } } = {};
-  tiers.forEach((t) => (tierMap[t] = { high: [], low: [] }));
+ 
+  const tiers = ["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5"];
 
-  players
-    .filter((p) => !p.tier?.toUpperCase().startsWith("R"))
-    .forEach((p) => {
-      const key = p.tier.toUpperCase();
-      if (key.startsWith("HT") && tierMap[key]) tierMap[key].high.push(p);
-      else if (key.startsWith("LT")) {
-        const mainTier = "HT" + key.slice(2);
-        if (tierMap[mainTier]) tierMap[mainTier].low.push(p);
-      }
+// Map display name → player codes
+const tierCodeMap: { [key: string]: string } = {
+  "Tier 1": "HT1",
+  "Tier 2": "HT2",
+  "Tier 3": "HT3",
+  "Tier 4": "HT4",
+  "Tier 5": "HT5",
+};
+
+const tierMap: { [key: string]: { high: Player[]; low: Player[]; code: string } } = {};
+tiers.forEach((t) => (tierMap[t] = { high: [], low: [], code: tierCodeMap[t] }));
+
+players
+  .filter((p) => !p.tier?.toUpperCase().startsWith("R"))
+  .forEach((p) => {
+    Object.keys(tierMap).forEach((displayTier) => {
+      const code = tierMap[displayTier].code; // HT1, HT2 etc
+      if (p.tier.toUpperCase() === code) tierMap[displayTier].high.push(p);
+      else if (p.tier.toUpperCase() === code.replace("HT", "LT")) tierMap[displayTier].low.push(p);
     });
-
-  Object.keys(tierMap).forEach((t) => {
-    tierMap[t].high.sort((a, b) => a.ign.localeCompare(b.ign));
-    tierMap[t].low.sort((a, b) => a.ign.localeCompare(b.ign));
   });
+
+Object.keys(tierMap).forEach((t) => {
+  tierMap[t].high.sort((a, b) => a.ign.localeCompare(b.ign));
+  tierMap[t].low.sort((a, b) => a.ign.localeCompare(b.ign));
+});
 
   const getTierHeaderStyle = (tier: string) => {
     if (tier === "Tier 1") return "bg-yellow-500 text-black relative overflow-hidden font-bold text-lg";
