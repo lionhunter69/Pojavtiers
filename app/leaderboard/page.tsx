@@ -42,17 +42,43 @@ export default function Leaderboard() {
   }, []);
 
   const fetchPlayers = async () => {
-    const { data, error } = await supabase
-      .from("players")
-      .select("*")
-      .not("tier", "ilike", "R%")
-      .order("tier", { ascending: true })
-      .order("ign", { ascending: true })
-      .limit(10);
+  const { data, error } = await supabase
+    .from("players")
+    .select("*")
+    .not("tier", "ilike", "R%");
 
-    if (!error) setPlayers(data as Player[]);
-    setLoading(false);
-  };
+  if (!error && data) {
+    const playersData = data as Player[];
+
+    type RankPair = { HT: Player[]; LT: Player[] };
+    const rankMap: Record<string, RankPair> = {};
+
+    playersData.forEach((p) => {
+      const match = p.tier.match(/(HT|LT)(\d+)/);
+      if (!match) return;
+
+      const type = match[1] as "HT" | "LT";
+      const num = match[2];
+
+      if (!rankMap[num]) rankMap[num] = { HT: [], LT: [] };
+      rankMap[num][type].push(p);
+    });
+
+    const merged: Player[] = [];
+    Object.keys(rankMap)
+      .sort((a, b) => Number(a) - Number(b))
+      .forEach((rank) => {
+        const pair = rankMap[rank];
+        pair.HT.forEach((p) => merged.push(p));
+        pair.LT.forEach((p) => merged.push(p));
+      });
+
+    // 🔥 Limit to top 10 players
+    setPlayers(merged.slice(0, 10));
+  }
+
+  setLoading(false);
+};
 
   useEffect(() => {
     fetchPlayers();
